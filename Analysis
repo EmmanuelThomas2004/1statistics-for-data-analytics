@@ -1,0 +1,102 @@
+import pandas as pd
+import scipy.stats as stats
+from scipy.stats import norm
+data = {
+    "Employee_ID": [
+        "E101", "E102", "E103", "E104", "E105",
+        "E106", "E107", "E108", "E109", "E110",
+        "E111", "E112", "E113", "E114", "E115",
+        "E116", "E117", "E118", "E119", "E120"
+    ],
+
+    "Department": [
+        "IT", "HR", "Finance", "IT", "Sales",
+        "HR", "IT", "Finance", "Sales", "IT",
+        "HR", "Finance", "Sales", "IT", "HR",
+        "Sales", "Finance", "IT", "Sales", "IT"
+    ],
+
+    "Age": [
+        23, 28, 25, 30, 26,
+        32, 24, 29, 27, 31,
+        26, 34, 28, 25, 30,
+        33, 27, 29, 35, 32
+    ],
+
+    "Experience_Years": [
+        1, 4, 2, 6, 3,
+        8, 1, 5, 4, 7,
+        3, 9, 4, 2, 6,
+        8, 3, 5, 10, 7
+    ],
+
+    "Monthly_Salary": [
+        28000, 30000, 32000, 35000, 36000,
+        38000, 40000, 42000, 42000, 43000,
+        44000, 45000, 46000, 48000, 50000,
+        52000, 55000, 58000, 60000, 150000
+    ],
+
+    "Performance_Score": [
+        65, 68, 70, 71, 72,
+        73, 74, 75, 75, 76,
+        77, 78, 79, 80, 81,
+        82, 83, 84, 85, 87
+    ],
+
+    "Education": [
+        "Bachelor", "Master", "Bachelor", "Bachelor", "Master",
+        "Bachelor", "Master", "Bachelor", "Bachelor", "Master",
+        "Bachelor", "Master", "Bachelor", "Master", "Bachelor",
+        "Bachelor", "Master", "Bachelor", "Master", "Bachelor"
+    ],
+
+    "Satisfaction": [
+        "Good", "Average", "Excellent", "Good", "Average",
+        "Good", "Excellent", "Good", "Average", "Excellent",
+        "Good", "Average", "Good", "Excellent", "Good",
+        "Average", "Excellent", "Good", "Excellent", "Good"
+    ]
+}
+
+df = pd.DataFrame(data)
+pd.set_option("display.max_columns", None)
+
+print("mean", df["Monthly_Salary"].mean())
+print("Std.Deviation", df["Monthly_Salary"].std())
+print("Most occuring value", df["Monthly_Salary"].mode())
+print("COV", df["Monthly_Salary"].std()*100/df["Monthly_Salary"].mean())
+q1 = df["Monthly_Salary"].quantile(0.25)
+q3 = df["Monthly_Salary"].quantile(0.75)
+IQR = q3 - q1
+lower_bound = q1 - (1.5 * IQR)
+Upper_bound = q3 + (1.5 * IQR)
+print("Upper and lower values:",lower_bound,Upper_bound)
+print(df[(df["Monthly_Salary"] < lower_bound) | (df["Monthly_Salary"] > Upper_bound)])
+df["unusual_data"] = stats.zscore(df["Monthly_Salary"],ddof=0)
+print(df[df["unusual_data"].abs() >= 2])
+print("Skewness",df["Monthly_Salary"].skew())
+frquency = df["Education"].value_counts()
+print(frquency)
+print(frquency.cumsum())
+mean = df["Monthly_Salary"].mean()
+std = df["Monthly_Salary"].std()
+lower_1 = mean - std
+upper_1 =  mean + std
+percentage_1 = (norm.cdf(1) - norm.cdf(-1))*100
+employye_1 =  100 * percentage_1/100
+print(lower_1 ,"-" , upper_1)
+print(percentage_1)
+lower_2  = mean - (2* std)
+upper_2 =  mean + (2* std)
+percentage_2 = (norm.cdf(2) - norm.cdf(-2)) * 100
+print(lower_2 ,"-" , upper_2)
+print(percentage_2)
+lower_3 = mean - (3* std)
+upper_3 = mean + (3* std)
+percentage_3 = (norm.cdf(3) - norm.cdf(-3)) * 100
+print(lower_3 ,"-" , upper_3)
+print(percentage_3)
+print(df[df["unusual_data"].abs() >= 2])
+print("Skewness",df["Monthly_Salary"].skew())
+print(df["Monthly_Salary"].min())
